@@ -1,0 +1,103 @@
+﻿@model List<vucongcoder.Controllers.HomeController.SoftwareERP>
+
+
+@{
+    ViewBag.Title = "ERP Software Management";
+}
+
+<!-- Thêm Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .card-erp {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+        width: 260px;
+        padding: 25px 20px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+        .card-erp:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgb(101 16 242 / 0.3);
+        }
+
+    .card-icon {
+        font-size: 50px;
+        color: #6610f2;
+        margin-bottom: 15px;
+        animation: bounce 2s infinite;
+    }
+
+    @@keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    .card-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+        color: #3a0ca3;
+    }
+
+    .card-desc {
+        font-size: 0.9rem;
+        color: #555;
+        height: 60px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .btn-manage {
+        background-color: #6610f2;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-manage:hover {
+            background-color: #520dc2;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .card-erp {
+            width: 90%;
+        }
+    }
+</style>
+
+<h2 class="text-center mb-4">ERP Software Management</h2>
+
+<div class="card-container">
+    @foreach (var item in Model)
+    {
+        <div class="card-erp">
+            <i class="@item.IconClass card-icon"></i>
+            <div class="card-title">@item.Name</div>
+            <div class="card-desc" title="@item.Description">@item.Description</div>
+            <a href="@item.Url" class="btn-manage">Manage</a>
+        </div>
+    }
+</div>

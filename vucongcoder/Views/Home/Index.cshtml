@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    /* Animation styles */
+    .fade-in {
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .slide-up {
+        animation: slideUp 1.2s ease-out;
+    }
+
+    .zoom-in {
+        animation: zoomIn 0.7s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(40px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes zoomIn {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Icon animations */
+    .animated-icon {
+        font-size: 40px;
+        color: #6f42c1;
+        margin: 20px;
+        display: inline-block;
+    }
+
+    @@keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    .bounce {
+        animation: bounce 1.8s infinite;
+    }
+
+    @@keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .rotate {
+        animation: rotate 4s linear infinite;
+    }
+
+    @@keyframes swing {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(8deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-8deg); }
+        100% { transform: rotate(0deg); }
+    }
+
+    .swing {
+        animation: swing 2.5s ease-in-out infinite;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        transition: 0.3s ease-in-out;
+    }
+
+    .lead {
+        text-align: justify;
+    }
+</style>
+
+<div class="text-center">
+    <!-- Section: Animated icons -->
+
+    <!-- Section: Title & subtitle -->
+    <h1 class="fade-in">Website <strong>Vũ Công Coder</strong></h1>
+    <p class="lead fade-in">Đào tạo công nghệ thông tin chuyên sâu và thực tiễn</p>
+
+    <div class="my-5 fade-in">
+    <div class="d-flex justify-content-center flex-wrap">
+        <i class="fab fa-html5 animated-icon bounce" title="HTML5"></i>
+        <i class="fab fa-css3-alt animated-icon swing" title="CSS3"></i>
+        <i class="fab fa-js animated-icon rotate" title="JavaScript"></i>
+        <i class="fab fa-php animated-icon bounce" title="PHP"></i>
+        <i class="fab fa-java animated-icon swing" title="Java"></i>
+        <i class="fas fa-database animated-icon rotate" title="Database"></i>
+    </div>
+</div>
+    <!-- Section: Animated buttons -->
+    <div class="row justify-content-center mb-4 slide-up">
+        <div class="col-6 col-sm-4 col-md-2 mb-2">
+            <button class="btn btn-primary w-100 zoom-in">Primary</button>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-2">
+            <button class="btn btn-secondary w-100 zoom-in">Secondary</button>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-2">
+            <button class="btn btn-success w-100 zoom-in">Success</button>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-2">
+            <button class="btn btn-info w-100 zoom-in">Info</button>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-2">
+            <button class="btn btn-warning w-100 zoom-in">Warning</button>
+        </div>
+    </div>
+
+    <!-- Section: Main content -->
+    <div class="p-4 bg-light rounded slide-up">
+        <h2 class="mb-3">Hỗ Trợ Đồ Án Công Nghệ Thông Tin</h2>
+        <p class="lead">
+            🖥 <strong>Ngôn ngữ:</strong> C, C++, C# <br />
+            💾 <strong>CSDL:</strong> MySQL, Excel, SQL Server, Access, XML…<br />
+            📱 <strong>Mobile:</strong> Android – Windows Phone<br />
+            🌐 <strong>Web:</strong> HTML, CSS, JavaScript, PHP, JSP, Servlet<br />
+            🧰 <strong>Nền tảng:</strong> Visual Basic, Wordpress, Java, Access<br />
+            📝 <strong>Báo cáo:</strong> Hỗ trợ viết báo cáo, slide trình bày đồ án
+        </p>
+        <button class="btn btn-primary me-2">Preview</button>
+        <div class="btn-group">
+            <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Download</button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Bootstrap CSS</a></li>
+                <li><a class="dropdown-item" href="#">Source Files</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,266 @@
+﻿
+@{
+    ViewBag.Title = "MessageAnalysis";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f9fafb;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        }
+
+        .form-control, .btn {
+            border-radius: 0.75rem;
+        }
+
+        .result-box {
+            background: #fff;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,.1);
+        }
+
+        .category-title {
+            font-weight: bold;
+            color: #0d6efd;
+            margin-top: 1rem;
+        }
+
+        .trung {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+            padding: 0 5px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .trung-row {
+            background-color: #f8d7da;
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+        }
+
+        .lai {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        .loi {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="card p-3">
+            <h4 class="text-center mb-3">📩 Phân tích tin nhắn</h4>
+
+            <div class="mb-3">
+                <label class="form-label">Tên người đánh</label>
+                <input id="txtNguoiDanh" type="text" class="form-control" placeholder="Nhập tên người đánh" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tin nhắn</label>
+                <textarea id="txtMessage" class="form-control" rows="3" placeholder="Ví dụ: Đề: 282x1000, Lô: 23x2000, Xiên: 12-34x500"></textarea>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-4">
+                    <label class="form-label">Đề hệ số</label>
+                    <input id="txtHeSoDe" type="number" class="form-control" value="1000" />
+                </div>
+                <div class="col-4">
+                    <label class="form-label">Lô hệ số</label>
+                    <input id="txtHeSoLo" type="number" class="form-control" value="23000" />
+                </div>
+                <div class="col-4">
+                    <label class="form-label">Xiên hệ số</label>
+                    <input id="txtHeSoXien" type="number" class="form-control" value="1000" />
+                </div>
+            </div>
+
+            <div class="d-grid mt-3">
+                <button id="btnPhanTich" class="btn btn-primary">📝 Ghi</button>
+            </div>
+
+            <div id="result" class="result-box d-none"></div>
+        </div>
+    </div>
+
+    <script>
+    let xsContent = '@Html.Raw(Json.Encode(ViewBag.Content))';
+
+function getDBLast2(content){
+    let dbMatch = content.match(/ĐB:\s*(\d+)/);
+    return dbMatch ? dbMatch[1].slice(-2) : '';
+}
+
+function getAllLast2Digits(content){
+    let allNumbers = [];
+    let regex = /\d+/g;
+    let matches = content.match(regex);
+    if(matches){
+        matches.forEach(n=>{
+            if(n.length >= 2) allNumbers.push(n.slice(-2));
+            else allNumbers.push(n.padStart(2,'0'));
+        });
+    }
+    return allNumbers;
+}
+
+function parseMessage(message){
+    const heSoDe = parseInt(document.getElementById("txtHeSoDe").value) || 1;
+    const heSoLo = parseInt(document.getElementById("txtHeSoLo").value) || 1;
+    const heSoXien = parseInt(document.getElementById("txtHeSoXien").value) || 1;
+
+    let result = { de: [], lo: [], xien: [], total: 0, totalTrung: 0 };
+
+    let deMatch = message.match(/Đề\s*:\s*([^,]+)/i);
+    let loMatch = message.match(/Lô\s*:\s*([^,]+)/i);
+    let xienMatch = message.match(/Xiên\s*:\s*([^,]+)/i);
+
+    const dbLast2 = getDBLast2(xsContent);
+    const allLast2 = getAllLast2Digits(xsContent);
+
+    // Đề
+    if(deMatch){
+        let parts = deMatch[1].trim().split(/\s+/);
+        parts.forEach(p=>{
+            let [num, money] = p.split('x');
+            if(num && money){
+                let moneyNumber = parseInt(money);
+                let moneyDisplay = moneyNumber * heSoDe;
+                if(num.length===3){
+                    let s1=num.slice(0,2), s2=num.slice(1,3);
+                    let t1 = s1 === dbLast2 ? moneyNumber * 70000 : 0;
+                    let t2 = s2 === dbLast2 ? moneyNumber * 70000 : 0;
+                    result.de.push({so:s1, tien: moneyDisplay, trung: s1===dbLast2, tienTrung: t1});
+                    result.de.push({so:s2, tien: moneyDisplay, trung: s2===dbLast2, tienTrung: t2});
+                    result.total += moneyDisplay*2;
+                    result.totalTrung += t1+t2;
+                } else{
+                    let t = num === dbLast2 ? moneyNumber * 70000 : 0;
+                    result.de.push({so:num, tien: moneyDisplay, trung: num===dbLast2, tienTrung: t});
+                    result.total += moneyDisplay;
+                    result.totalTrung += t;
+                }
+            }
+        });
+    }
+
+    // Lô
+    if(loMatch){
+        let parts = loMatch[1].trim().split(/\s+/);
+        parts.forEach(p=>{
+            let [num, money] = p.split('x');
+            if(num && money){
+                let moneyNumber = parseInt(money);
+                let moneyDisplay = moneyNumber * heSoLo;
+                if (num.length === 3) {
+                    let s1 = num.slice(0, 2), s2 = num.slice(1, 3);
+                    let t1 = s1 === dbLast2 ? moneyNumber * 80000 : 0;
+                    let t2 = s2 === dbLast2 ? moneyNumber * 80000 : 0;
+                    result.lo.push({ so: s1, tien: moneyDisplay, trung: s1 === dbLast2, tienTrung: t1 });
+                    result.lo.push({ so: s2, tien: moneyDisplay, trung: s2 === dbLast2, tienTrung: t2 });
+                    result.total += moneyDisplay * 2;
+                    result.totalTrung += t1 + t2;
+                } else {
+                    let t = num === dbLast2 ? moneyNumber * 80000 : 0;
+                    result.lo.push({ so: num, tien: moneyDisplay, trung: num === dbLast2, tienTrung: t });
+                    result.total += moneyDisplay;
+                    result.totalTrung += t;
+                }
+            }
+        });
+    }
+
+    // Xiên
+    if(xienMatch){
+        let parts = xienMatch[1].trim().split(/\s+/);
+        parts.forEach(p=>{
+            let [num, money] = p.split('x');
+            if(num && money){
+                let moneyNumber = parseInt(money);
+                let moneyDisplay = moneyNumber * heSoXien;
+                let trung = allLast2.includes(num);
+                let tienTrung = trung ? moneyNumber * 100000 : 0;
+                result.xien.push({so:num, tien: moneyDisplay, trung: trung, tienTrung: tienTrung});
+                result.total += moneyDisplay;
+                result.totalTrung += tienTrung;
+            }
+        });
+    }
+
+    return result;
+}
+
+
+    function phanTich(){
+        let nguoiDanh = document.getElementById("txtNguoiDanh").value;
+        let message = document.getElementById("txtMessage").value;
+        let data = parseMessage(message);
+
+        let html = `<div class="category-title">${nguoiDanh}</div>`;
+
+        function renderCategory(name, arr){
+            html += `<div class="category-title">${name}</div>`;
+            arr.forEach(d=>{
+                html += `<div class="${d.trung?'trung-row':''}">${d.so} x ${d.tien.toLocaleString()} ${d.trung?'<span class="trung">Trúng</span>':''}</div>`;
+            });
+        }
+
+        if(data.de.length) renderCategory("Đề", data.de);
+        if(data.lo.length) renderCategory("Lô", data.lo);
+        if(data.xien.length) renderCategory("Xiên", data.xien);
+
+        let laiLo = data.total - data.totalTrung ;
+        let laiClass = laiLo < 0 ? 'loi' : 'lai';
+        html += `<hr><strong>Tổng tiền đánh: ${data.total.toLocaleString()} đ</strong><br>`;
+        html += `<strong>Tổng tiền trúng: ${data.totalTrung.toLocaleString()} đ</strong><br>`;
+        if (laiLo < 0) {
+            html += `<strong class="${laiClass}">Lỗ: ${laiLo.toLocaleString()} đ</strong>`;
+        }
+        else if (laiLo > 0) {
+            html += `<strong class="${laiClass}">Lãi: ${laiLo.toLocaleString()} đ</strong>`;
+        }
+        else {
+            html += `<strong class="${laiClass}">Hòa: ${laiLo.toLocaleString()} đ</strong>`;
+        }
+
+
+        let resultBox = document.getElementById("result");
+        resultBox.innerHTML = html;
+        resultBox.classList.remove("d-none");
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+        document.getElementById("btnPhanTich").addEventListener("click", phanTich);
+    });
+    </script>
+</body>
+</html>
+
+

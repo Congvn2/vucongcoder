@@ -1,0 +1,39 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100 %;
+    height: 100 %;
+    background: #70c5ce;
+    font - family: Arial, sans - serif;
+}
+
+#gamecontainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#flappyCanvas {
+    display: block;
+    width: 100 %;
+    height: 100 %;
+    background: #70c5ce;
+}
+
+#scoreboard {
+    position: absolute;
+    top: 10px;
+    left: 50 %;
+    transform: translateX(-50 %);
+    color: #fff;
+    font - size: 2em;
+    text - align: center;
+}
+
+#replay button {
+    margin - top: 10px;
+    cursor: pointer;
+    font - size: 18px;
+    padding: 10px 20px;
+}
